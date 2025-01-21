@@ -1,7 +1,19 @@
 ---
 import { humanize } from "@/lib/utils/textConverter";
 
-const { name = "" , recipe_img = ""}: { name?: string , recipe_img?: string } = Astro.props;
+const {
+  name = "",
+  recipe_img = "",
+  level = "",
+  time = "",
+  quantity = "",
+}: {
+  name?: string;
+  recipe_img?: string;
+  level?: string;
+  time?: string;
+  quantity?: string;
+} = Astro.props;
 ---
 
 <section>
@@ -9,8 +21,21 @@ const { name = "" , recipe_img = ""}: { name?: string , recipe_img?: string } = 
     <div
       class="rounded-2xl bg-gradient-to-b from-body to-theme-light px-8 py-14 dark:from-darkmode-body dark:to-darkmode-theme-light"
     >
-    <img src={recipe_img} alt={name} class="recipe-image" />
-      <h3 set:text={humanize(name)} />
+      <div class="flex flex-row gap-2.5 justify-center items-center">
+        <img
+          src={recipe_img}
+          alt={name}
+          width="32"
+          height="32"
+          class="recipe-image"
+        />
+        <h3 set:text={humanize(name)} />
+      </div>
+      <div class="flex flex-row justify-evenly mt-2">
+        <p set:text={"Nível: " + humanize(level)} />
+        <p set:text={"Tempo de preparação: " + humanize(time)} />
+        <p set:text={"Quantidade: " + humanize(quantity)} />
+      </div>
     </div>
   </div>
 </section>

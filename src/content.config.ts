@@ -157,7 +157,7 @@ const professorCollection = defineCollection({
     image: z.string().optional(),
     recipes: z.array(
       z.object({
-        id:z.number(),
+        id: z.number(),
         type: z.string().default("professor"),
         name: z.string(),
         recipe_img: z.string(),
@@ -169,14 +169,14 @@ const professorCollection = defineCollection({
             name: z.string(),
             quantity: z.string(),
             item_img: z.string().optional(), // Opcional para imagem do ingrediente
-          })
+            value_npc: z.number().default(1),
+          }),
         ),
-      })
+      }),
     ),
     draft: z.boolean().optional(),
   }),
 });
-
 
 // Export collections
 export const collections = {

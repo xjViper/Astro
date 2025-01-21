@@ -1,0 +1,58 @@
+---
+const { items } = Astro.props;
+---
+
+<table>
+  <thead>
+    <tr>
+      <th>Imagem</th>
+      <th>Nome</th>
+      <th>Quantidade</th>
+      <th>Valor Unitário NPC</th>
+      <th>Valor Total NPC</th>
+      <th>Valor Unitário Market</th>
+      <th>Valor Total Market</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      items.map((item, index) => (
+        <tr key={index}>
+          <td>
+            <img src={item.item_img} alt={item.name} width="50" />
+          </td>
+          <td>{item.name}</td>
+          <td id={`quantity-${index}`}>{item.quantity}</td>
+          <td>{item.value_npc}</td>
+          <td>{parseInt(item.quantity) * item.value_npc}</td>
+          <td>
+            <input type="number" id={`market-price-${index}`} value="" />
+          </td>
+          <td id={`market-total-${index}`} />
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
+
+<script type="module" client:load>
+  // Espera o DOM estar carregado
+  document.addEventListener("DOMContentLoaded", () => {
+    // Adiciona um listener de evento para cada input
+    const inputs = document.querySelectorAll('input[type="number"]');
+    inputs.forEach((input, index) => {
+      input.addEventListener("input", () => updateMarketTotal(index));
+    });
+  });
+
+  // Função que vai calcular o total baseado no valor de Market
+  function updateMarketTotal(index) {
+    const marketPrice = document.getElementById(`market-price-${index}`).value;
+    const quantidade = document.getElementById(`quantity-${index}`).innerHTML;
+    const marketTotal = parseInt(marketPrice) * parseInt(quantidade); // Cálculo do total
+    console.log(`${marketPrice} * ${quantidade} = ${marketPrice}`);
+
+    document.getElementById(`market-total-${index}`).textContent =
+      marketTotal || "";
+  }
+</script>
