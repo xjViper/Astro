@@ -147,6 +147,37 @@ const testimonialSectionCollection = defineCollection({
   }),
 });
 
+// Recipes collection schema
+const professorCollection = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/professor" }),
+  schema: z.object({
+    title: z.string().optional(),
+    meta_title: z.string().optional(),
+    description: z.string().optional(),
+    image: z.string().optional(),
+    recipes: z.array(
+      z.object({
+        id:z.number(),
+        type: z.string().default("professor"),
+        name: z.string(),
+        recipe_img: z.string(),
+        difficulty: z.string(),
+        preparation_time: z.string(),
+        servings: z.string(),
+        ingredients: z.array(
+          z.object({
+            name: z.string(),
+            quantity: z.string(),
+            item_img: z.string().optional(), // Opcional para imagem do ingrediente
+          })
+        ),
+      })
+    ),
+    draft: z.boolean().optional(),
+  }),
+});
+
+
 // Export collections
 export const collections = {
   // Pages
@@ -156,6 +187,9 @@ export const collections = {
   pages: pagesCollection,
   about: aboutCollection,
   contact: contactCollection,
+
+  // Coleções adicionais
+  professor: professorCollection,
 
   // sections
   ctaSection: ctaSectionCollection,

@@ -1,0 +1,26 @@
+---
+// src/components/RecipeCard.astro
+import ImageExt from "./ImageExt.astro";
+const { data } = Astro.props; // Recebe os dados passados do componente pai
+const recipeData = data || {}; // Evita erro se 'data' for undefined
+const { recipe_img, name, id, type} = recipeData;
+---
+<div
+  class="rounded bg-theme-light p-8 text-center dark:bg-darkmode-theme-light"
+>
+  {
+    recipe_img && (
+      <ImageExt
+        class="mx-auto mb-6 rounded"
+        src={recipe_img}
+        alt={name}
+        width={120}
+        height={120}
+        format="webp"
+      />
+    )
+  }
+  <h4 class="mb-3">
+    <a href={`/${type}/${id}`}>{name}</a>
+  </h4>
+</div>

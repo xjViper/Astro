@@ -1,0 +1,16 @@
+---
+import { humanize } from "@/lib/utils/textConverter";
+
+const { name = "" , recipe_img = ""}: { name?: string , recipe_img?: string } = Astro.props;
+---
+
+<section>
+  <div class="container text-center">
+    <div
+      class="rounded-2xl bg-gradient-to-b from-body to-theme-light px-8 py-14 dark:from-darkmode-body dark:to-darkmode-theme-light"
+    >
+    <img src={recipe_img} alt={name} class="recipe-image" />
+      <h3 set:text={humanize(name)} />
+    </div>
+  </div>
+</section>

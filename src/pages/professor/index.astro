@@ -1,0 +1,46 @@
+---
+import RecipeCard from "@/components/RecipeCard.astro";
+import Pagination from "@/components/Pagination.astro";
+import config from "@/config/config.json";
+import Base from "@/layouts/Base.astro";
+import { getCollection, getEntry } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import RecipesHeader from "@/partials/RecipesHeader.astro";
+
+// Defina a pasta onde as receitas estão localizadas
+const RECIPE_FOLDER = "professor";
+// Pega o conteúdo do arquivo -index.mdx, que contém os metadados da página
+// Pega as receitas do arquivo rank_e.mdx
+const recipesCollection = await getCollection(
+  RECIPE_FOLDER
+);
+const { title, description, meta_title, image } = recipesCollection[0].data
+// console.log(recipes);
+const recipesData = recipesCollection[0]?.data.recipes || []; // Lista de receitas
+---
+
+<Base
+title={title}
+meta_title={meta_title}
+description={description}
+image={image}
+>
+  <RecipesHeader title="Professor" />
+
+  <section class="section">
+    <div class="container">
+      <div class="row gx-5">
+        <!-- Lista de receitas -->
+        <div class="lg:col-8">
+          <div class="row">
+            {recipesData.map((recipe) => (
+              <div class="mb-14 md:col-6">
+                <RecipeCard data={recipe} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

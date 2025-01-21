@@ -35,6 +35,9 @@ export default defineConfig({
       ],
     }),
     mdx(),
+    {
+      name: '@astro/content',
+    },
   ],
   markdown: {
     remarkPlugins: [
