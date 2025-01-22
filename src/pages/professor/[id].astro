@@ -7,6 +7,7 @@ import PageHeader from "@/partials/PageHeader.astro"; // Cabeçalho da página
 import type { CollectionEntry } from "astro:content";
 import RecipeHeader from "@/partials/RecipeHeader.astro";
 import ItensTable from "@/components/ItensTable.astro";
+import ProfitTable from "@/components/ProfitTable.astro";
 
 // Obter todos os itens da coleção 'professor'
 const professorEntries = await getCollection("professor");
@@ -55,17 +56,12 @@ if (!selectedRecipe) {
 
   <section class="section">
     <div class="container">
-      <h3>Itens:</h3>
+      <h4>Itens:</h4>
       <ItensTable items={selectedRecipe.ingredients} />
-      <!-- <ul>
-        {
-          selectedRecipe.ingredients.map((ingredient, index) => (
-            <li key={index}>
-              {ingredient.name}: {ingredient.quantity}
-            </li>
-          ))
-        }
-      </ul> -->
+    </div>
+    <div class="container">
+      <h4>Profit:</h4>
+      <ProfitTable craft={selectedRecipe} />
     </div>
   </section>
 </Base>

@@ -1,7 +1,7 @@
 ---
 import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
-
+import { fileTypeFromStream } from "file-type";
 // Props interface for the component
 interface Props {
   src: string;
@@ -28,7 +28,15 @@ let {
   style,
 } = Astro.props;
 
-const isValidPath = true
+const response = await fetch(src);
+let isValidPath = false;
+if (response.body) {
+  const fileType = await fileTypeFromStream(response.body);
+
+  if (fileType && fileType.mime.startsWith("image/")) {
+    isValidPath = true;
+  }
+}
 ---
 
 {

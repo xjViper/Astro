@@ -163,6 +163,7 @@ const professorCollection = defineCollection({
         recipe_img: z.string(),
         difficulty: z.string(),
         preparation_time: z.string(),
+        value_npc: z.number().default(1),
         servings: z.string(),
         ingredients: z.array(
           z.object({

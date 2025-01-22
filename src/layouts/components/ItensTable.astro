@@ -1,58 +1,71 @@
 ---
+import ImageExt from "./ImageExt.astro";
+
 const { items } = Astro.props;
 ---
 
-<table>
-  <thead>
-    <tr>
-      <th>Imagem</th>
-      <th>Nome</th>
-      <th>Quantidade</th>
-      <th>Valor Unitário NPC</th>
-      <th>Valor Total NPC</th>
-      <th>Valor Unitário Market</th>
-      <th>Valor Total Market</th>
-    </tr>
-  </thead>
-  <tbody>
-    {
-      items.map((item, index) => (
-        <tr key={index}>
-          <td>
-            <img src={item.item_img} alt={item.name} width="50" />
-          </td>
-          <td>{item.name}</td>
-          <td id={`quantity-${index}`}>{item.quantity}</td>
-          <td>{item.value_npc}</td>
-          <td>{parseInt(item.quantity) * item.value_npc}</td>
-          <td>
-            <input type="number" id={`market-price-${index}`} value="" />
-          </td>
-          <td id={`market-total-${index}`} />
-        </tr>
-      ))
-    }
-  </tbody>
-</table>
+<div class="content">
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Quantidade</th>
+        <th>Valor Unitário NPC</th>
+        <th>Valor Total NPC</th>
+        <th>Valor Unitário Market</th>
+        <th>Valor Total Market</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        items.map((item, index) => (
+          <tr key={index}>
+            <td class="flex flex-row items-center gap-1 justify-center">
+              <ImageExt
+                class="rounded"
+                src={item.item_img}
+                alt={item.name}
+                width={16}
+                height={16}
+                format="webp"
+              />
+              {item.name}
+            </td>
+            <td id={`quantity-${index}`}>{item.quantity}</td>
+            <td>{item.value_npc}</td>
+            <td>{parseInt(item.quantity) * item.value_npc}</td>
+            <td>
+              <input
+                type="number"
+                id={`market-price-${index}`}
+                class="form-input w-3/5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none recipe-market"
+                value="1"
+              />
+            </td>
+            <td id={`market-total-${index}`} />
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
 
 <script type="module" client:load>
-  // Espera o DOM estar carregado
   document.addEventListener("DOMContentLoaded", () => {
-    // Adiciona um listener de evento para cada input
-    const inputs = document.querySelectorAll('input[type="number"]');
+    const inputs = document.querySelectorAll(".recipe-market");
     inputs.forEach((input, index) => {
+      updateMarketTotal(index);
       input.addEventListener("input", () => updateMarketTotal(index));
     });
   });
 
-  // Função que vai calcular o total baseado no valor de Market
   function updateMarketTotal(index) {
     const marketPrice = document.getElementById(`market-price-${index}`).value;
+    if (parseInt(marketPrice) < 1) return;
     const quantidade = document.getElementById(`quantity-${index}`).innerHTML;
-    const marketTotal = parseInt(marketPrice) * parseInt(quantidade); // Cálculo do total
-    console.log(`${marketPrice} * ${quantidade} = ${marketPrice}`);
+    const marketTotal = parseInt(marketPrice) * parseInt(quantidade);
 
     document.getElementById(`market-total-${index}`).textContent =
-      marketTotal || "";
+      marketTotal || "0";
   }
 </script>
