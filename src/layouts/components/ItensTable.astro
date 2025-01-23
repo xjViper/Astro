@@ -18,54 +18,59 @@ const { items } = Astro.props;
     </thead>
     <tbody>
       {
-        items.map((item, index) => (
-          <tr key={index}>
-            <td class="flex flex-row items-center gap-1 justify-center">
-              <ImageExt
-                class="rounded"
-                src={item.item_img}
-                alt={item.name}
-                width={16}
-                height={16}
-                format="webp"
-              />
-              {item.name}
-            </td>
-            <td id={`quantity-${index}`}>{item.quantity}</td>
-            <td>{item.value_npc}</td>
-            <td>{parseInt(item.quantity) * item.value_npc}</td>
-            <td>
-              <input
-                type="number"
-                id={`market-price-${index}`}
-                class="form-input w-3/5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none recipe-market"
-                value="1"
-              />
-            </td>
-            <td id={`market-total-${index}`} />
-          </tr>
-        ))
+        items.map(
+          (
+            item: {
+              item_img: string;
+              name: string;
+              quantity: number;
+              value_npc: number;
+            },
+            index: any,
+          ) => (
+            <tr>
+              <td class="flex flex-row items-center gap-1 justify-center">
+                <ImageExt
+                  class="rounded"
+                  src={item.item_img}
+                  alt={item.name}
+                  width={16}
+                  height={16}
+                  format="webp"
+                />
+                {item.name}
+              </td>
+              <td id={`quantity-${index}`} data-item-quantity={item.quantity}>
+                {item.quantity}
+              </td>
+              <td id={`npc-price-${index}`}>{item.value_npc}</td>
+              <td id={`npc-total-${index}`}>
+                {item.quantity * item.value_npc}
+              </td>
+              <td>
+                <input
+                  type="number"
+                  id={`market-price-${index}`}
+                  class="form-input w-3/5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none recipe-market"
+                  value={item.value_npc}
+                />
+              </td>
+              <td id={`market-total-${index}`} />
+            </tr>
+          ),
+        )
       }
     </tbody>
   </table>
 </div>
-
-<script type="module" client:load>
-  document.addEventListener("DOMContentLoaded", () => {
-    const inputs = document.querySelectorAll(".recipe-market");
-    inputs.forEach((input, index) => {
-      updateMarketTotal(index);
-      input.addEventListener("input", () => updateMarketTotal(index));
+<script type="module">
+  const recipeInputs = document.querySelectorAll(".recipe-market");
+  recipeInputs.forEach((input, index) => {
+    input.addEventListener("input", function () {
+      let inputValue = this.value;
+      if (inputValue.length > 8) {
+        this.value = inputValue.slice(0, 8);
+      }
     });
   });
-
-  function updateMarketTotal(index) {
-    const marketPrice = document.getElementById(`market-price-${index}`).value;
-    if (parseInt(marketPrice) < 1) return;
-    const quantidade = document.getElementById(`quantity-${index}`).innerHTML;
-    const marketTotal = parseInt(marketPrice) * parseInt(quantidade);
-
-    document.getElementById(`market-total-${index}`).textContent =
-      marketTotal || "0";
-  }
 </script>

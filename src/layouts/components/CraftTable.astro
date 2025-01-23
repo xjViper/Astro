@@ -1,0 +1,38 @@
+---
+const { craft } = Astro.props;
+---
+
+<div class="content">
+  <table>
+    <thead>
+      <tr>
+        <th>Craft</th>
+        <th>Itens Craftados</th>
+        <th>Tempo Necessário</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <input
+            type="number"
+            id={`craft`}
+            class="form-input w-3/5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none craft-number"
+            value="1"
+          />
+        </td>
+        <td id={`itens-craft`} data-results={craft.result}>{craft.result}</td>
+        <td id={`time-total`} data-time={craft.craft_time}></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script type="module">
+  document.getElementById("craft").addEventListener("input", function () {
+    let inputValue = this.value;
+    if (inputValue.length > 4) {
+      this.value = inputValue.slice(0, 4);
+    }
+  });
+</script>

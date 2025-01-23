@@ -154,6 +154,7 @@ const professorCollection = defineCollection({
     title: z.string().optional(),
     meta_title: z.string().optional(),
     description: z.string().optional(),
+    rank: z.string().optional(),
     image: z.string().optional(),
     recipes: z.array(
       z.object({
@@ -161,14 +162,14 @@ const professorCollection = defineCollection({
         type: z.string().default("professor"),
         name: z.string(),
         recipe_img: z.string(),
-        difficulty: z.string(),
-        preparation_time: z.string(),
+        level: z.number().default(1),
+        craft_time: z.number().default(1),
         value_npc: z.number().default(1),
-        servings: z.string(),
+        result: z.number().default(1),
         ingredients: z.array(
           z.object({
             name: z.string(),
-            quantity: z.string(),
+            quantity: z.number().default(1),
             item_img: z.string().optional(), // Opcional para imagem do ingrediente
             value_npc: z.number().default(1),
           }),

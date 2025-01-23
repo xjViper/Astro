@@ -5,15 +5,53 @@ const {
   name = "",
   recipe_img = "",
   level = "",
-  time = "",
-  quantity = "",
+  minutes = 0,
+  quantity = 0,
 }: {
   name?: string;
   recipe_img?: string;
   level?: string;
-  time?: string;
-  quantity?: string;
+  minutes?: number;
+  quantity?: number;
 } = Astro.props;
+
+let time = minutes;
+let date;
+if (time > 0) {
+  const minutosPorAno = 525600;
+  const minutosPorMes = 43200;
+  const minutosPorDia = 1440;
+  const minutosPorHora = 60;
+  const anos = Math.floor(time / minutosPorAno);
+  time %= minutosPorAno;
+  const meses = Math.floor(time / minutosPorMes);
+  time %= minutosPorMes;
+  const dias = Math.floor(time / minutosPorDia);
+  time %= minutosPorDia;
+  const horas = Math.floor(time / minutosPorHora);
+  time %= minutosPorHora;
+
+  const partes = [];
+  if (anos == 1) partes.push(`${anos} ano`);
+  if (anos >= 2) partes.push(`${anos} anos`);
+  if (meses == 1) partes.push(`${meses} mês`);
+  if (meses >= 2) partes.push(`${meses} meses`);
+  if (dias == 1) partes.push(`${dias} dia`);
+  if (dias >= 2) partes.push(`${dias} dias`);
+  if (horas == 1) partes.push(`${horas} hora`);
+  if (horas >= 2) partes.push(`${horas} horas`);
+  if (time == 1) partes.push(`${time} minuto`);
+  if (time >= 2) partes.push(`${time} minutos`);
+
+  if (partes.length > 1) {
+    const ultimaParte = partes.pop();
+    date = partes.join(", ") + " e " + ultimaParte;
+  } else {
+    date = partes.join(", ");
+  }
+}
+
+const timeString = date || minutes;
 ---
 
 <section>
@@ -32,9 +70,9 @@ const {
         <h3 set:text={humanize(name)} />
       </div>
       <div class="flex flex-row justify-evenly mt-2">
-        <p set:text={"Nível: " + humanize(level)} />
-        <p set:text={"Tempo de preparação: " + humanize(time)} />
-        <p set:text={"Quantidade: " + humanize(quantity)} />
+        <p set:text={"Nível: " + level} />
+        <p set:text={"Tempo de preparação: " + timeString} />
+        <p set:text={"Quantidade: " + quantity} />
       </div>
     </div>
   </div>

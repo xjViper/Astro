@@ -7,8 +7,6 @@ const { craft } = Astro.props;
   <table>
     <thead>
       <tr>
-        <th>Craft</th>
-        <th>Itens Craftados</th>
         <th>Valor por Item NPC</th>
         <th>Valor Total NPC</th>
         <th>Valor por Item Market</th>
@@ -17,25 +15,14 @@ const { craft } = Astro.props;
     </thead>
     <tbody>
       <tr>
-        <td>
-          <input
-            type="number"
-            id={`craft`}
-            class="form-input w-3/5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none craft-number"
-            value="1"
-          />
-        </td>
-        <td id={`itens-craft`} data-servings={craft.servings}
-          >{craft.servings}</td
-        >
         <td id={`npc-value`}>{craft.value_npc}</td>
-        <td id={`item-npc`}>{craft.value_npc * craft.servings}</td>
+        <td id={`item-npc`}>{craft.value_npc * craft.results}</td>
         <td>
           <input
             type="number"
             id={`item-price`}
             class="form-input w-3/5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none item-price"
-            value="1"
+            value={craft.value_npc}
           />
         </td>
         <td id={`item-total`}></td>
@@ -67,45 +54,14 @@ const { craft } = Astro.props;
   <!-- Custos -->
 </div>
 
-<script type="module" client:load>
-  document.addEventListener("DOMContentLoaded", () => {
-    const craftNumber = document.querySelectorAll(".craft-number");
-    craftNumber.forEach((input) => {
-      input.addEventListener("input", () => updateCraftTotal());
+<script type="module">
+  const profitInputs = document.querySelectorAll(".item-price");
+  profitInputs.forEach((input, index) => {
+    input.addEventListener("input", function () {
+      let inputValue = this.value;
+      if (inputValue.length > 8) {
+        this.value = inputValue.slice(0, 8);
+      }
     });
-    const itemPrice = document.querySelectorAll(".item-price");
-    itemPrice.forEach((input) => {
-      input.addEventListener("input", () => updateItemMarketTotal());
-    });
-
-    updateCraftTotal();
   });
-
-  function updateCraftTotal() {
-    //Craft Value
-    const craftNumber = document.getElementById(`craft`).value;
-    if (parseInt(craftNumber) < 1) return;
-    const craftInput = document.getElementById(`itens-craft`);
-    const quantidade = craftInput.getAttribute("data-servings");
-    const craftTotal = parseInt(craftNumber) * parseInt(quantidade);
-
-    // NPC Value
-    const npcValue = document.getElementById(`npc-value`).innerHTML;
-    const npcTotal = parseInt(craftTotal) * parseInt(npcValue);
-
-    document.getElementById(`itens-craft`).textContent = craftTotal || "0";
-    document.getElementById(`item-npc`).textContent = npcTotal || "0";
-
-    if (document.getElementById(`item-price`).value > 0) {
-      updateItemMarketTotal();
-    }
-  }
-  function updateItemMarketTotal() {
-    const marketPrice = document.getElementById(`item-price`).value;
-    if (parseInt(marketPrice) < 1) return;
-    const quantidade = document.getElementById(`itens-craft`).innerHTML;
-    const marketTotal = parseInt(marketPrice) * parseInt(quantidade);
-
-    document.getElementById(`item-total`).textContent = marketTotal || "0";
-  }
 </script>
