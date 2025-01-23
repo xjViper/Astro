@@ -228,5 +228,38 @@ if (!selectedRecipe) {
       totalNPC / parseInt(craftNumber) || "0";
     document.getElementById(`cost-by-craft-market`).textContent =
       totalMarket / parseInt(craftNumber) || "0";
+
+    // Profits
+
+    // Total Profit
+    const valueMarket = document.getElementById(`item-total`).textContent;
+    const valueNpc = document.getElementById(`item-npc`).textContent;
+
+    document.getElementById(`profit-npc`).textContent =
+      parseInt(valueNpc) - totalMarket || "0";
+    document.getElementById(`profit-market`).textContent =
+      parseInt(valueMarket) - totalMarket || "0";
+    // Profit Margin
+    const profitNpc = document.getElementById(`profit-npc`).textContent;
+    const profitMarket = document.getElementById(`profit-market`).textContent;
+    document.getElementById(`profit-margin-npc`).textContent =
+      ((parseInt(profitNpc) / totalMarket) * 100).toFixed(2) + " %" || "0";
+    document.getElementById(`profit-margin-market`).textContent =
+      ((parseInt(profitMarket) / totalMarket) * 100).toFixed(2) + " %" || "0";
+
+    // Profit by Hour
+    /* <td id={`profit-by-hour-npc`}></td>
+      <td id={`profit-by-hour-market`}></td> */
+
+    let craftTime = document
+      .getElementById(`time-total`)
+      .getAttribute("data-time");
+    let time = craftTime * parseInt(craftNumber);
+    const hours = time / 60;
+
+    document.getElementById(`profit-by-hour-npc`).textContent =
+      (parseInt(profitNpc) / hours).toFixed(2) || "0";
+    document.getElementById(`profit-by-hour-market`).textContent =
+      (parseInt(profitMarket) / hours).toFixed(2) || "0";
   }
 </script>

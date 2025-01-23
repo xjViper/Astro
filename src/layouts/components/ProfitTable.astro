@@ -52,6 +52,28 @@ const { craft } = Astro.props;
     </tbody>
   </table>
   <!-- Custos -->
+  <!-- Lucros -->
+  <table>
+    <thead>
+      <tr>
+        <th>Lucro Total no Npc</th>
+        <th>Margem de Lucro Npc</th>
+        <th>Lucro por Hora Npc</th>
+        <th>Lucro Total no Market</th>
+        <th>Margem de Lucro Market</th>
+        <th>Lucro por Hora Market</th>
+      </tr>
+    </thead>
+    <tbody>
+      <td id={`profit-npc`}></td>
+      <td id={`profit-margin-npc`}></td>
+      <td id={`profit-by-hour-npc`}></td>
+      <td id={`profit-market`}></td>
+      <td id={`profit-margin-market`}></td>
+      <td id={`profit-by-hour-market`}></td>
+    </tbody>
+  </table>
+  <!-- Lucros -->
 </div>
 
 <script type="module">
