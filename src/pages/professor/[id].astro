@@ -99,11 +99,14 @@ if (!selectedRecipe) {
     const craftTotal = parseInt(craftNumber) * parseInt(quantity);
 
     // NPC Value
-    const npcValue = document.getElementById(`npc-value`).innerHTML;
+    const npcValue = removeMoneyValue(
+      document.getElementById(`npc-value`).innerHTML,
+    );
     const npcTotal = parseInt(craftTotal) * parseInt(npcValue);
 
     document.getElementById(`itens-craft`).textContent = craftTotal || "0";
-    document.getElementById(`item-npc`).textContent = npcTotal || "0";
+    document.getElementById(`item-npc`).textContent =
+      moneyValues(npcTotal) || "0";
 
     if (document.getElementById(`item-price`).value > 0) {
       updateItemMarketTotal();
@@ -126,10 +129,14 @@ if (!selectedRecipe) {
     const craftNumber = document.getElementById(`craft`).value;
     if (parseInt(craftNumber) < 1) return;
     // Market input
-    const marketPrice = document.getElementById(`market-price-${index}`).value;
+    const marketPrice = removeMoneyValue(
+      document.getElementById(`market-price-${index}`).value,
+    );
     if (parseInt(marketPrice) < 1) return;
 
-    const npcPrice = document.getElementById(`npc-price-${index}`).textContent;
+    const npcPrice = removeMoneyValue(
+      document.getElementById(`npc-price-${index}`).textContent,
+    );
 
     let quantidade = document
       .getElementById(`quantity-${index}`)
@@ -142,20 +149,24 @@ if (!selectedRecipe) {
 
     document.getElementById(`quantity-${index}`).textContent =
       quantidade || "0";
-    document.getElementById(`npc-total-${index}`).textContent = npcTotal || "0";
+    document.getElementById(`npc-total-${index}`).textContent =
+      moneyValues(npcTotal) || "0";
     document.getElementById(`market-total-${index}`).textContent =
-      marketTotal || "0";
+      moneyValues(marketTotal) || "0";
 
     updateCosts();
   }
 
   function updateItemMarketTotal() {
-    const marketPrice = document.getElementById(`item-price`).value;
+    const marketPrice = removeMoneyValue(
+      document.getElementById(`item-price`).value,
+    );
     if (parseInt(marketPrice) < 1) return;
     const quantidade = document.getElementById(`itens-craft`).innerHTML;
     const marketTotal = parseInt(marketPrice) * parseInt(quantidade);
 
-    document.getElementById(`item-total`).textContent = marketTotal || "0";
+    document.getElementById(`item-total`).textContent =
+      moneyValues(marketTotal) || "0";
 
     updateCosts();
   }
@@ -203,54 +214,60 @@ if (!selectedRecipe) {
     let totalMarket = 0;
     const recipeInputs = document.querySelectorAll(".recipe-market");
     recipeInputs.forEach((input, index) => {
-      totalNPC += parseInt(
+      totalNPC += removeMoneyValue(
         document.getElementById(`npc-total-${index}`).textContent,
       );
-      totalMarket += parseInt(
+      totalMarket += removeMoneyValue(
         document.getElementById(`market-total-${index}`).textContent,
       );
     });
     // Total values
-    document.getElementById(`cost-total-npc`).textContent = totalNPC || "0";
+    document.getElementById(`cost-total-npc`).textContent =
+      moneyValues(totalNPC) || "0";
     document.getElementById(`cost-total-market`).textContent =
-      totalMarket || "0";
+      moneyValues(totalMarket) || "0";
 
     // By item values
     const quantidade = document.getElementById(`itens-craft`).innerHTML;
     document.getElementById(`cost-by-item-npc`).textContent =
-      totalNPC / parseInt(quantidade) || "0";
+      moneyValues(totalNPC / parseInt(quantidade)) || "0";
     document.getElementById(`cost-by-item-market`).textContent =
-      totalMarket / parseInt(quantidade) || "0";
+      moneyValues(totalMarket / parseInt(quantidade)) || "0";
 
     // By craft values
     const craftNumber = document.getElementById(`craft`).value;
     document.getElementById(`cost-by-craft-npc`).textContent =
-      totalNPC / parseInt(craftNumber) || "0";
+      moneyValues(totalNPC / parseInt(craftNumber)) || "0";
     document.getElementById(`cost-by-craft-market`).textContent =
-      totalMarket / parseInt(craftNumber) || "0";
+      moneyValues(totalMarket / parseInt(craftNumber)) || "0";
 
     // Profits
 
     // Total Profit
-    const valueMarket = document.getElementById(`item-total`).textContent;
-    const valueNpc = document.getElementById(`item-npc`).textContent;
+    const valueMarket = removeMoneyValue(
+      document.getElementById(`item-total`).textContent,
+    );
+    const valueNpc = removeMoneyValue(
+      document.getElementById(`item-npc`).textContent,
+    );
 
     document.getElementById(`profit-npc`).textContent =
-      parseInt(valueNpc) - totalMarket || "0";
+      moneyValues(parseInt(valueNpc) - totalMarket) || "0";
     document.getElementById(`profit-market`).textContent =
-      parseInt(valueMarket) - totalMarket || "0";
+      moneyValues(parseInt(valueMarket) - totalMarket) || "0";
     // Profit Margin
-    const profitNpc = document.getElementById(`profit-npc`).textContent;
-    const profitMarket = document.getElementById(`profit-market`).textContent;
+    const profitNpc = removeMoneyValue(
+      document.getElementById(`profit-npc`).textContent,
+    );
+    const profitMarket = removeMoneyValue(
+      document.getElementById(`profit-market`).textContent,
+    );
     document.getElementById(`profit-margin-npc`).textContent =
       ((parseInt(profitNpc) / totalMarket) * 100).toFixed(2) + " %" || "0";
     document.getElementById(`profit-margin-market`).textContent =
       ((parseInt(profitMarket) / totalMarket) * 100).toFixed(2) + " %" || "0";
 
     // Profit by Hour
-    /* <td id={`profit-by-hour-npc`}></td>
-      <td id={`profit-by-hour-market`}></td> */
-
     let craftTime = document
       .getElementById(`time-total`)
       .getAttribute("data-time");
@@ -258,8 +275,37 @@ if (!selectedRecipe) {
     const hours = time / 60;
 
     document.getElementById(`profit-by-hour-npc`).textContent =
-      (parseInt(profitNpc) / hours).toFixed(2) || "0";
+      moneyValues(parseInt(profitNpc) / hours) || "0";
     document.getElementById(`profit-by-hour-market`).textContent =
-      (parseInt(profitMarket) / hours).toFixed(2) || "0";
+      moneyValues(parseInt(profitMarket) / hours) || "0";
+  }
+
+  function moneyValues(value) {
+    const isNegative = value < 0;
+    value = Math.abs(value);
+
+    let formattedValue;
+    if (value >= 1000000) {
+      formattedValue = (value / 1000000).toFixed(2).replace(/\.00$/, "") + "KK";
+    } else if (value >= 1000) {
+      formattedValue = (value / 1000).toFixed(2).replace(/\.00$/, "") + "K";
+    } else {
+      formattedValue = parseInt(value)
+        .toFixed(2)
+        .replace(/\.00$/, "")
+        .toString();
+    }
+
+    return isNegative ? "-" + formattedValue : formattedValue;
+  }
+
+  function removeMoneyValue(value) {
+    if (value.includes("KK")) {
+      return parseFloat(value.replace("KK", "")) * 1000000;
+    } else if (value.includes("K")) {
+      return parseFloat(value.replace("K", "")) * 1000;
+    } else {
+      return parseInt(value);
+    }
   }
 </script>

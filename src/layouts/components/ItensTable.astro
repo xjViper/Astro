@@ -4,16 +4,16 @@ import ImageExt from "./ImageExt.astro";
 const { items } = Astro.props;
 ---
 
-<div class="content">
+<div class="content overflow-x-auto">
   <table>
     <thead>
       <tr>
         <th>Item</th>
         <th>Quantidade</th>
-        <th>Valor Unitário NPC</th>
-        <th>Valor Total NPC</th>
-        <th>Valor Unitário Market</th>
-        <th>Valor Total Market</th>
+        <th class="min-w-[120px]">Valor Unitário NPC</th>
+        <th class="min-w-[120px]">Valor Total NPC</th>
+        <th class="min-w-[150px]">Valor Unitário Market</th>
+        <th class="min-w-[120px]">Valor Total Market</th>
       </tr>
     </thead>
     <tbody>
@@ -51,7 +51,7 @@ const { items } = Astro.props;
                 <input
                   type="number"
                   id={`market-price-${index}`}
-                  class="form-input w-3/5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none recipe-market"
+                  class="sm:w-100 form-input md:w-3/5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none recipe-market"
                   value={item.value_npc}
                 />
               </td>

@@ -3,7 +3,7 @@ const { craft } = Astro.props;
 ---
 
 <div class="content">
-  <table>
+  <table class="table-fixed">
     <thead>
       <tr>
         <th>Craft</th>
@@ -17,7 +17,7 @@ const { craft } = Astro.props;
           <input
             type="number"
             id={`craft`}
-            class="form-input w-3/5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none craft-number"
+            class="form-input sm:w-3/5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none craft-number"
             value="1"
           />
         </td>
