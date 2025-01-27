@@ -6,24 +6,21 @@ import Base from "@/layouts/Base.astro";
 import { getCollection, getEntry } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import RecipesHeader from "@/partials/RecipesHeader.astro";
+import { getSinglePage } from "@/lib/contentParser.astro";
 
-// Defina a pasta onde as receitas estão localizadas
 const RECIPE_FOLDER = "professor";
-// Pega o conteúdo do arquivo -index.mdx, que contém os metadados da página
-// Pega as receitas do arquivo rank_e.mdx
-const recipesCollection = await getCollection(
-  RECIPE_FOLDER
-);
-const { title, description, meta_title, image } = recipesCollection[0].data
-// console.log(recipes);
-const recipesData = recipesCollection[0]?.data.recipes || []; // Lista de receitas
+
+const craftIndex = (await getEntry(
+  RECIPE_FOLDER,
+  "-index",
+)) as CollectionEntry<"professor">;
+const crafts = await getSinglePage(RECIPE_FOLDER);
 ---
 
 <Base
-title={title}
-meta_title={meta_title}
-description={description}
-image={image}
+  title={craftIndex.data.title}
+  meta_title={craftIndex.data.meta_title}
+  description={craftIndex.data.description}
 >
   <RecipesHeader title="Professor" />
 
@@ -33,11 +30,13 @@ image={image}
         <!-- Lista de receitas -->
         <div class="lg:col-8">
           <div class="row">
-            {recipesData.map((recipe) => (
-              <div class="mb-14 md:col-6">
-                <RecipeCard data={recipe} />
-              </div>
-            ))}
+            {
+              crafts.map((craft) => (
+                <div class="mb-14 md:col-6">
+                  <RecipeCard data={craft} />
+                </div>
+              ))
+            }
           </div>
         </div>
       </div>

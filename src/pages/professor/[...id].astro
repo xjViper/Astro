@@ -1,5 +1,5 @@
 ---
-// src/pages/receitas/[id].astro
+// src/pages/professor/[id].astro
 
 import { getCollection } from "astro:content";
 import Base from "@/layouts/Base.astro";
@@ -7,70 +7,59 @@ import RecipeHeader from "@/partials/RecipeHeader.astro";
 import ItensTable from "@/components/ItensTable.astro";
 import ProfitTable from "@/components/ProfitTable.astro";
 import CraftTable from "@/components/CraftTable.astro";
+import { getSinglePage } from "@/lib/contentParser.astro";
 
-// Obter todos os itens da coleção 'professor'
-const professorEntries = await getCollection("professor");
-const recipesData = professorEntries[0]?.data.recipes || [];
+const { id } = Astro.params;
 
-// Função que gera os caminhos estáticos para cada receita
 export async function getStaticPaths() {
-  // Recupera a coleção "professor" que contém as receitas
-  const professorEntries = await getCollection("professor");
+  const CRAFT_FOLDER = "professor";
+  const craft = await getSinglePage(CRAFT_FOLDER);
 
-  // Acessa a lista de receitas dentro da coleção e gera os paths
-  const recipesData = professorEntries[0]?.data.recipes || [];
-
-  // Gera os paths com base no id (ou qualquer outro identificador único)
-  const paths = recipesData.map((recipe) => ({
-    params: { id: recipe.id.toString() }, // ou use recipe.slug, se for o caso
+  const paths = craft.map((data) => ({
+    params: {
+      id: data.id,
+    },
+    props: { data },
   }));
-
   return paths;
 }
 
-// Obter o ID da URL
-const { id } = Astro.params; // Pegando o parâmetro 'id' diretamente da URL
+const { data } = Astro.props;
 
-// Encontrar a receita com o ID correspondente
-const selectedRecipe = recipesData.find((r) => r.id === parseInt(id));
-
-if (!selectedRecipe) {
-  throw new Error("Receita não encontrada");
-}
+const recipe = data.data;
 ---
 
 <Base
-  title={selectedRecipe.name}
-  meta_title={professorEntries[0].data.meta_title}
-  description={professorEntries[0].data.description}
-  image={professorEntries[0].data.image}
+  title={recipe.name}
+  meta_title={recipe.meta_title}
+  description={recipe.description}
 >
   <RecipeHeader
-    name={selectedRecipe.name}
-    recipe_img={selectedRecipe.recipe_img}
-    level={selectedRecipe.level}
-    minutes={selectedRecipe.craft_time}
-    quantity={selectedRecipe.result}
+    name={recipe.name}
+    recipe_img={recipe.recipe_img}
+    level={recipe.level}
+    minutes={recipe.craft_time}
+    quantity={recipe.result}
   />
 
   <section class="section">
     <div class="container">
       <h4>Craft:</h4>
-      <CraftTable craft={selectedRecipe} />
+      <CraftTable craft={recipe} />
     </div>
     <div class="container">
       <h4>Itens:</h4>
-      <ItensTable items={selectedRecipe.ingredients} />
+      <ItensTable items={recipe.ingredients} />
     </div>
     <div class="container">
       <h4>Profit:</h4>
-      <ProfitTable craft={selectedRecipe} />
+      <ProfitTable craft={recipe} />
     </div>
   </section>
 </Base>
 
 <script type="module">
-  document.addEventListener("DOMContentLoaded", () => {
+  function startCraft() {
     const craftNumber = document.querySelectorAll(".craft-number");
     craftNumber.forEach((input) => {
       input.addEventListener("input", () => updateCraftTotal());
@@ -88,7 +77,9 @@ if (!selectedRecipe) {
     });
 
     updateCraftTotal();
-  });
+  }
+
+  startCraft();
 
   function updateCraftTotal() {
     //Craft Value
@@ -199,7 +190,6 @@ if (!selectedRecipe) {
     if (hours >= 2) results.push(`${hours} horas`);
     if (time == 1) results.push(`${time} minuto`);
     if (time >= 2) results.push(`${time} minutos`);
-    console.log(results.length);
 
     if (results.length > 1) {
       const ultimaParte = results.pop();
