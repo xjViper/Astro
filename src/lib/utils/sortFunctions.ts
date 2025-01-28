@@ -23,3 +23,23 @@ export const sortByWeight = (array: any[]) => {
   const sortedArray = [...new Set([...sortedWeightedArray, ...withoutWeight])];
   return sortedArray;
 };
+
+// sort craft by rank(S, A, B, C, D, E)
+export const sortByRank = (array: any[]) => {
+  const rankValues: { [key: string]: number } = {
+    S: 5,
+    A: 4,
+    B: 3,
+    C: 2,
+    D: 1,
+    E: 0,
+  };
+
+  const sortedArray = array.sort(
+    (a: any, b: any) =>
+      (rankValues[b.data.rank.toUpperCase()] || 0) -
+      (rankValues[a.data.rank.toUpperCase()] || 0),
+  );
+
+  return sortedArray;
+};

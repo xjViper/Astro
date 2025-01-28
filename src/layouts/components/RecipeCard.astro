@@ -3,28 +3,32 @@
 import ImageExt from "./ImageExt.astro";
 const { data } = Astro.props; // Recebe os dados passados do componente pai
 const recipeData = data || {}; // Evita erro se 'data' for undefined
-const { recipe_img, name, rank, type } = recipeData.data;
+const { recipe_img, name, rank, type, level } = recipeData.data;
 const { id } = recipeData;
 ---
 
 <div
-  class="rounded bg-theme-light p-8 text-center dark:bg-darkmode-theme-light"
+  class="rounded bg-theme-light p-4 text-center dark:bg-darkmode-theme-light"
 >
   <a href={`/${type}/${id}`}>
     {
       recipe_img && (
         <ImageExt
-          class="mx-auto mb-6 rounded"
+          class="mx-auto mb-3 mt-3"
           src={recipe_img}
           alt={name}
-          width={120}
-          height={120}
+          width={80}
+          height={80}
           format="webp"
         />
       )
     }
   </a>
-  <h4 class="mb-3">
+  <h5 class="mb-3">
     <a href={`/${type}/${id}`}>{name}</a>
-  </h4>
+  </h5>
+  <div class="flex flex-row justify-around mb-2">
+    <h6>Rank: {rank.toUpperCase()}</h6>
+    <h6>Level: {level}</h6>
+  </div>
 </div>

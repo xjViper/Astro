@@ -9,8 +9,6 @@ import ProfitTable from "@/components/ProfitTable.astro";
 import CraftTable from "@/components/CraftTable.astro";
 import { getSinglePage } from "@/lib/contentParser.astro";
 
-const { id } = Astro.params;
-
 export async function getStaticPaths() {
   const CRAFT_FOLDER = "professor";
   const craft = await getSinglePage(CRAFT_FOLDER);
