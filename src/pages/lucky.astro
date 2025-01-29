@@ -1,0 +1,19 @@
+---
+import LuckyCalculator from "@/helpers/LuckyCalc";
+import Base from "@/layouts/Base.astro";
+---
+
+<Base title="Lucky">
+  <section class="section">
+    <div class="container">
+      <div class="row gx-5">
+        <!-- Lista de receitas -->
+        <div class="lg:col-12">
+          <div class="row">
+            <LuckyCalculator client:load />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
