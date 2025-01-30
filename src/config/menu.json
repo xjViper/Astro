@@ -5,12 +5,12 @@
       "url": "/"
     },
     {
-      "name": "About",
-      "url": "/about"
+      "name": "Lucky Calculator",
+      "url": "/lucky"
     },
     {
-      "name": "Elements",
-      "url": "/elements"
+      "name": "Professor",
+      "url": "/professor"
     },
     {
       "name": "Pages",
@@ -42,8 +42,12 @@
           "url": "/404"
         },
         {
-          "name": "Professor",
-          "url": "/professor"
+          "name": "About",
+          "url": "/about"
+        },
+        {
+          "name": "Elements",
+          "url": "/elements"
         }
       ]
     }
