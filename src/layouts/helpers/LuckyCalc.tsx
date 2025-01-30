@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const LuckyCalculator = () => {
-  const [valorBase, setValorBase] = useState<number>(0);
+  const [valorBase, setValorBase] = useState<string>("");
   const [valores, setValores] = useState<number[]>([]);
 
   // Percentuais fixos
@@ -9,14 +9,14 @@ const LuckyCalculator = () => {
 
   // Imagens associadas aos incrementos
   const imagens = [
-    "https://via.placeholder.com/30?text=10%",
-    "https://via.placeholder.com/30?text=20%",
-    "https://via.placeholder.com/30?text=35%",
-    "https://via.placeholder.com/30?text=50%",
-    "https://via.placeholder.com/30?text=65%",
-    "https://via.placeholder.com/30?text=80%",
-    "https://via.placeholder.com/30?text=100%",
-    "https://via.placeholder.com/30?text=150%",
+    "/images/lucky-1.png",
+    "/images/lucky-2.png",
+    "/images/lucky-3.png",
+    "/images/lucky-4.png",
+    "/images/lucky-5.png",
+    "/images/lucky-6.png",
+    "/images/lucky-7.png",
+    "/images/lucky-9.png",
   ];
 
   // Função para atualizar os valores com base no valor base
@@ -30,24 +30,23 @@ const LuckyCalculator = () => {
   // Atualiza o valor base e chama a função de cálculo em tempo real
   const handleValorBaseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const novoValorBase = Number(e.target.value);
-    setValorBase(novoValorBase);
-    handleCalcular(novoValorBase); // Recalcula os valores imediatamente
+    setValorBase(String(novoValorBase));
+    handleCalcular(Number(novoValorBase) || 0); // Recalcula os valores imediatamente
   };
+
+  useEffect(() => {
+    handleCalcular(0);
+  }, []);
 
   return (
     <div className="p-4">
       <div className="mb-4">
-        <label
-          htmlFor="valorBase"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Valor Base
-        </label>
+        <h5>Drop Rate</h5>
         <div className="flex items-center">
           <input
             type="number"
             id="valorBase"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="form-input [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             value={valorBase}
             onChange={handleValorBaseChange}
             placeholder="Digite o valor base"
@@ -57,28 +56,27 @@ const LuckyCalculator = () => {
 
       {/* Tabela responsiva */}
       <div className="mt-6 overflow-x-auto">
-        <div className="hidden md:grid grid-cols-10 gap-4">
-          <div className="col-span-5 text-center font-semibold">Acréscimo</div>
-          <div className="col-span-5 text-center font-semibold">
-            Valor Final
-          </div>
-        </div>
-        <div className="md:grid grid-cols-10 gap-4">
+        <div className="md:grid grid-cols-8 gap-4">
           {valores.map((valor, index) => (
             <div
               key={index}
-              className="flex flex-col md:flex-row justify-between items-center mb-4 md:mb-0"
+              className="flex justify-evenly md:flex-col md:justify-between items-center mb-4 p-1 sm:p-0 md:mb-0 border-b border-white border-solid sm:border-b-0"
             >
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:w-full justify-between items-center gap-1 sm:border-b sm:border-white sm:border-solid">
                 <img
                   src={imagens[index]}
+                  height={40}
+                  width={40}
                   alt={`Acréscimo ${porcentagensFixas[index]}%`}
-                  className="ml-2 h-5 w-5"
+                  className="h-12 w-12"
                 />
                 <span className="font-medium">{`+${porcentagensFixas[index]}%`}</span>
               </div>
-              <div className="md:text-center text-lg font-bold text-blue-600">
-                {valor.toFixed(2)}
+
+              <div
+                className={`sm:text-center sm:p-1 text-lg font-bold ${valor >= 100 ? "text-green-600" : "text-blue-600"}`}
+              >
+                {valor.toFixed(2) + "%"}
               </div>
             </div>
           ))}

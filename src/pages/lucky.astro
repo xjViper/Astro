@@ -1,17 +1,16 @@
 ---
 import LuckyCalculator from "@/helpers/LuckyCalc";
 import Base from "@/layouts/Base.astro";
+import PageHeader from "@/partials/PageHeader.astro";
 ---
 
 <Base title="Lucky">
+  <PageHeader title="Lucky Calculator" />
   <section class="section">
     <div class="container">
       <div class="row gx-5">
-        <!-- Lista de receitas -->
         <div class="lg:col-12">
-          <div class="row">
-            <LuckyCalculator client:load />
-          </div>
+          <LuckyCalculator client:load />
         </div>
       </div>
     </div>
