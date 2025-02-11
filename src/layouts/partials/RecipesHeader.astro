@@ -1,5 +1,6 @@
 ---
 import Breadcrumbs from "@/components/Breadcrumbs.astro";
+import Filters from "@/helpers/Filters";
 import { humanize } from "@/lib/utils/textConverter";
 
 const { title = "" }: { title?: string } = Astro.props;
@@ -11,6 +12,7 @@ const { title = "" }: { title?: string } = Astro.props;
       class="rounded-2xl bg-gradient-to-b from-body to-theme-light px-8 py-14 dark:from-darkmode-body dark:to-darkmode-theme-light"
     >
       <h1 set:text={humanize(title)} />
+      <Filters client:load />
       <!-- <Breadcrumbs className="mt-6" /> -->
     </div>
   </div>

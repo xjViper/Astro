@@ -8,6 +8,7 @@ import type { CollectionEntry } from "astro:content";
 import RecipesHeader from "@/partials/RecipesHeader.astro";
 import { getSinglePage } from "@/lib/contentParser.astro";
 import { sortByRank } from "@/lib/utils/sortFunctions";
+import ItemList from "@/helpers/ItemList";
 
 const RECIPE_FOLDER = "professor";
 
@@ -32,13 +33,7 @@ const sortedCrafts = sortByRank(crafts);
         <!-- Lista de receitas -->
         <div class="lg:col-12">
           <div class="row">
-            {
-              sortedCrafts.map((craft) => (
-                <div class="mb-14 md:col-4">
-                  <RecipeCard data={craft} />
-                </div>
-              ))
-            }
+            <ItemList itens={sortedCrafts} client:load />
           </div>
         </div>
       </div>
