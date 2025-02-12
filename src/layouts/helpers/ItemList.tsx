@@ -77,8 +77,8 @@ const ItemList = ({ itens }: { itens: Item[] }) => {
 
   return (
     <div className="row">
-      {sortedItems.map((craft) => (
-        <div className="mb-14 md:col-4">
+      {sortedItems.map((craft, i) => (
+        <div key={i} className="mb-14 md:col-4">
           <div className="rounded bg-theme-light p-4 text-center dark:bg-darkmode-theme-light ">
             <a href={`/${craft.data.type}/${craft.id}`}>
               {craft.data.recipe_img && (

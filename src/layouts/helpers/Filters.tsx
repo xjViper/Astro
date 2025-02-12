@@ -27,19 +27,20 @@ const Filters = () => {
   };
 
   return (
-    <div className="flex flex-row justify-around items-center">
-      <h4 className="flex flex-row gap-1">
+    <div className="flex flex-col gap-3 md:gap-0 md:flex-row justify-around items-center mt-2">
+      <h6 className="flex flex-row gap-1 self-start md:self-center">
         <FaFilter /> Filtros:
-      </h4>
+      </h6>
       <input
         type="text"
-        className="sm:w-100 form-input md:w-1/4 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-"
+        className="sm:w-100 form-input md:w-1/4 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
         placeholder="Buscar"
         value={$filterData.searchText}
         onChange={handleSearchChange}
       />
 
-      <div className="flex md:w-1/4 justify-around">
+      <div className="flex w-full md:w-1/4 justify-around">
+        <h6>Ordenar por:</h6>
         <div className="flex items-center gap-1">
           <input
             type="radio"
@@ -77,20 +78,23 @@ const Filters = () => {
         </div>
       </div>
 
-      <button
-        onClick={handleDirectionChange}
-        className="flex gap-1 items-center w-[10%]"
-      >
-        {orderDirection === "asc" ? (
-          <>
-            <FaSortAmountDownAlt /> Crescente
-          </>
-        ) : (
-          <>
-            <FaSortAmountDown /> Decrescente
-          </>
-        )}
-      </button>
+      <div className="flex w-full md:w-1/4 justify-center gap-1">
+        <h6>Ordem:</h6>
+        <button
+          onClick={handleDirectionChange}
+          className="flex w-[50%] justify-center gap-1 items-center md:w-[50%]"
+        >
+          {orderDirection === "asc" ? (
+            <>
+              <FaSortAmountDownAlt /> Crescente
+            </>
+          ) : (
+            <>
+              <FaSortAmountDown /> Decrescente
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
 };
