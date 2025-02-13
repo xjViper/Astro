@@ -78,16 +78,16 @@ const ItemList = ({ itens }: { itens: Item[] }) => {
   return (
     <div className="row">
       {sortedItems.map((craft, i) => (
-        <div key={i} className="mb-14 md:col-4">
-          <div className="rounded bg-theme-light p-4 text-center dark:bg-darkmode-theme-light ">
+        <div key={i} className="mb-14 md:col-4 ">
+          <div className="flex flex-col items-stretch justify-center rounded h-full bg-theme-light p-4 text-center dark:bg-darkmode-theme-light">
             <a href={`/${craft.data.type}/${craft.id}`}>
               {craft.data.recipe_img && (
                 <img
-                  className="mx-auto mb-3 mt-3"
+                  className="mx-auto mb-3 mt-3 h-14"
                   src={craft.data.recipe_img}
                   alt={craft.data.name}
-                  width={80}
-                  height={80}
+                  width={56}
+                  height={56}
                 />
               )}
             </a>

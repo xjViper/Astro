@@ -36,7 +36,7 @@ const recipe = data.data;
     name={recipe.name}
     recipe_img={recipe.recipe_img}
     level={recipe.level}
-    minutes={recipe.craft_time}
+    seconds={recipe.craft_time}
     quantity={recipe.result}
   />
 
@@ -164,20 +164,29 @@ const recipe = data.data;
     const timeText = document.getElementById(`time-total`);
     let craftTime = timeText.getAttribute("data-time");
     let time = craftTime * parseInt(craft);
-    const minutesByYear = 525600;
-    const minutesByMonth = 43200;
-    const minutesByDay = 1440;
-    const minutesByHour = 60;
-    const years = Math.floor(time / minutesByYear);
-    time %= minutesByYear;
-    const months = Math.floor(time / minutesByMonth);
-    time %= minutesByMonth;
-    const days = Math.floor(time / minutesByDay);
-    time %= minutesByDay;
-    const hours = Math.floor(time / minutesByHour);
-    time %= minutesByHour;
+    const secsPerYear = 31536000;
+    const secsPerMonth = 2592000;
+    const secsPerDay = 86400;
+    const secsPerHour = 3600;
+    const secsPerMinute = 60;
+
+    const years = Math.floor(time / secsPerYear);
+    time %= secsPerYear;
+
+    const months = Math.floor(time / secsPerMonth);
+    time %= secsPerMonth;
+
+    const days = Math.floor(time / secsPerDay);
+    time %= secsPerDay;
+
+    const hours = Math.floor(time / secsPerHour);
+    time %= secsPerHour;
+
+    const minutes = Math.floor(time / secsPerMinute);
+    time %= secsPerMinute;
 
     const results = [];
+
     if (years == 1) results.push(`${years} ano`);
     if (years >= 2) results.push(`${years} anos`);
     if (months == 1) results.push(`${months} mês`);
@@ -186,12 +195,14 @@ const recipe = data.data;
     if (days >= 2) results.push(`${days} dias`);
     if (hours == 1) results.push(`${hours} hora`);
     if (hours >= 2) results.push(`${hours} horas`);
-    if (time == 1) results.push(`${time} minuto`);
-    if (time >= 2) results.push(`${time} minutos`);
+    if (minutes == 1) results.push(`${minutes} minuto`);
+    if (minutes >= 2) results.push(`${minutes} minutos`);
+    if (time == 1) results.push(`${time} segundo`);
+    if (time >= 2) results.push(`${time} segundos`);
 
     if (results.length > 1) {
-      const ultimaParte = results.pop();
-      timeText.textContent = results.join(", ") + " e " + ultimaParte;
+      const lastResult = results.pop();
+      timeText.textContent = results.join(", ") + " e " + lastResult;
       return;
     }
     timeText.textContent = results.join(", ");
