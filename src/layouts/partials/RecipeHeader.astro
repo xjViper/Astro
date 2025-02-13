@@ -5,33 +5,43 @@ const {
   name = "",
   recipe_img = "",
   level = "",
-  minutes = 0,
+  seconds = 0,
   quantity = 0,
 }: {
   name?: string;
   recipe_img?: string;
   level?: string;
-  minutes?: number;
+  seconds?: number;
   quantity?: number;
 } = Astro.props;
 
-let time = minutes;
+let time = seconds;
 let date;
+
 if (time > 0) {
-  const minutosPorAno = 525600;
-  const minutosPorMes = 43200;
-  const minutosPorDia = 1440;
-  const minutosPorHora = 60;
-  const anos = Math.floor(time / minutosPorAno);
-  time %= minutosPorAno;
-  const meses = Math.floor(time / minutosPorMes);
-  time %= minutosPorMes;
-  const dias = Math.floor(time / minutosPorDia);
-  time %= minutosPorDia;
-  const horas = Math.floor(time / minutosPorHora);
-  time %= minutosPorHora;
+  const segundosPorAno = 31536000;
+  const segundosPorMes = 2592000;
+  const segundosPorDia = 86400;
+  const segundosPorHora = 3600;
+  const segundosPorMinuto = 60;
+
+  const anos = Math.floor(time / segundosPorAno);
+  time %= segundosPorAno;
+
+  const meses = Math.floor(time / segundosPorMes);
+  time %= segundosPorMes;
+
+  const dias = Math.floor(time / segundosPorDia);
+  time %= segundosPorDia;
+
+  const horas = Math.floor(time / segundosPorHora);
+  time %= segundosPorHora;
+
+  const minutos = Math.floor(time / segundosPorMinuto);
+  time %= segundosPorMinuto;
 
   const partes = [];
+
   if (anos == 1) partes.push(`${anos} ano`);
   if (anos >= 2) partes.push(`${anos} anos`);
   if (meses == 1) partes.push(`${meses} mês`);
@@ -40,8 +50,10 @@ if (time > 0) {
   if (dias >= 2) partes.push(`${dias} dias`);
   if (horas == 1) partes.push(`${horas} hora`);
   if (horas >= 2) partes.push(`${horas} horas`);
-  if (time == 1) partes.push(`${time} minuto`);
-  if (time >= 2) partes.push(`${time} minutos`);
+  if (minutos == 1) partes.push(`${minutos} minuto`);
+  if (minutos >= 2) partes.push(`${minutos} minutos`);
+  if (time == 1) partes.push(`${time} segundo`);
+  if (time >= 2) partes.push(`${time} segundos`);
 
   if (partes.length > 1) {
     const ultimaParte = partes.pop();
@@ -51,7 +63,7 @@ if (time > 0) {
   }
 }
 
-const timeString = date || minutes;
+const timeString = date || seconds;
 ---
 
 <section>
@@ -69,7 +81,7 @@ const timeString = date || minutes;
         />
         <h3 set:text={humanize(name)} />
       </div>
-      <div class="flex flex-row justify-evenly mt-2">
+      <div class="flex flex-col md:flex-row justify-evenly mt-2">
         <p set:text={"Nível: " + level} />
         <p set:text={"Tempo de preparação: " + timeString} />
         <p set:text={"Quantidade: " + quantity} />
