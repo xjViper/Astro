@@ -30,6 +30,8 @@ def extract_data_from_table(table_rows):
 
         # Nome e imagem principal
         name_quantity_text = name_td.text.strip()
+        name_quantity_text = name_quantity_text.replace("/", " and ")
+        name_quantity_text = name_quantity_text.replace(":", "")
         match = re.match(r"^(.*?)(?:\((\d+)x\))?$", name_quantity_text)
         if match:
             name = match.group(1).strip()
@@ -49,9 +51,15 @@ def extract_data_from_table(table_rows):
         # Ingredientes
         ingredients = []
         for img in ingredients_td.find_all("img"):
-            item_name = img.find_next(string=True).strip()
-            quantity = int(item_name.split(" ")[0])
-            item_name = " ".join(item_name.split(" ")[1:])
+            item_text = img.find_next(string=True).strip()
+            match = re.match(r"^([\d\.]+)\s*([A-Za-z].*)", item_text)
+            if match:
+                quantity = int(match.group(1).replace(".", ""))
+                item_name = match.group(2).strip()
+            else:
+                item_name = item_text
+                quantity = 1
+
             item_img = "https://wiki.pokexgames.com" + img["src"]
 
             ingredients.append(
@@ -82,8 +90,8 @@ def extract_data_from_table(table_rows):
     return recipes
 
 
-def save_mdx(recipe):
-    directory = f"./output/professor/rank_{recipe['rank']}"
+def save_mdx(job, recipe):
+    directory = f"./output/{job}/rank_{recipe['rank']}"
     os.makedirs(directory, exist_ok=True)
 
     mdx_content = f"""---
@@ -111,11 +119,12 @@ ingredients:
 
 
 # Exemplo de uso
-url = "https://wiki.pokexgames.com/index.php/Craft_Profiss%C3%B5es_-_Professor"
+url = "https://wiki.pokexgames.com/index.php/Craft_Profiss%C3%B5es_-_Aventureiro"
+job = "adventurer"
 response = requests.get(url)
 soup = BeautifulSoup(response.text, "html.parser")
 table_rows = soup.find_all("td", align="center")
 recipes = extract_data_from_table(table_rows)
 
 for recipe in recipes:
-    save_mdx(recipe)
+    save_mdx(job, recipe)
