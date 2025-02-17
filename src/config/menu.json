@@ -48,6 +48,18 @@
         {
           "name": "Elements",
           "url": "/elements"
+        },
+        {
+          "name": "Estilista",
+          "url": "/stylist"
+        },
+        {
+          "name": "Aventureiro",
+          "url": "/adventurer"
+        },
+        {
+          "name": "Engenheiro",
+          "url": "/engineer"
         }
       ]
     }

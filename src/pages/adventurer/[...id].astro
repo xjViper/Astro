@@ -1,0 +1,310 @@
+---
+// src/pages/aventureiro/[id].astro
+
+import { getCollection } from "astro:content";
+import Base from "@/layouts/Base.astro";
+import RecipeHeader from "@/partials/RecipeHeader.astro";
+import ItensTable from "@/components/ItensTable.astro";
+import ProfitTable from "@/components/ProfitTable.astro";
+import CraftTable from "@/components/CraftTable.astro";
+import { getSinglePage } from "@/lib/contentParser.astro";
+
+export async function getStaticPaths() {
+  const CRAFT_FOLDER = "adventurer";
+  const craft = await getSinglePage(CRAFT_FOLDER);
+
+  const paths = craft.map((data) => ({
+    params: {
+      id: data.id,
+    },
+    props: { data },
+  }));
+  return paths;
+}
+
+const { data } = Astro.props;
+
+const recipe = data.data;
+---
+
+<Base
+  title={recipe.name}
+  meta_title={recipe.meta_title}
+  description={recipe.description}
+>
+  <RecipeHeader
+    name={recipe.name}
+    recipe_img={recipe.recipe_img}
+    level={recipe.level}
+    seconds={recipe.craft_time}
+    quantity={recipe.result}
+  />
+
+  <section class="section">
+    <div class="container">
+      <h4>Craft:</h4>
+      <CraftTable craft={recipe} />
+    </div>
+    <div class="container">
+      <h4>Itens:</h4>
+      <ItensTable items={recipe.ingredients} />
+    </div>
+    <div class="container">
+      <h4>Profit:</h4>
+      <ProfitTable craft={recipe} />
+    </div>
+  </section>
+</Base>
+
+<script type="module">
+  function startCraft() {
+    const craftNumber = document.querySelectorAll(".craft-number");
+    craftNumber.forEach((input) => {
+      input.addEventListener("input", () => updateCraftTotal());
+    });
+
+    const itemPrice = document.querySelectorAll(".item-price");
+    itemPrice.forEach((input) => {
+      input.addEventListener("input", () => updateItemMarketTotal());
+    });
+
+    const recipePrice = document.querySelectorAll(".recipe-market");
+    recipePrice.forEach((input, index) => {
+      updateRow(index);
+      input.addEventListener("input", () => updateRow(index));
+    });
+
+    updateCraftTotal();
+  }
+
+  startCraft();
+
+  function updateCraftTotal() {
+    //Craft Value
+    const craftNumber = document.getElementById(`craft`).value;
+    if (parseInt(craftNumber) < 1) return;
+    const craftInput = document.getElementById(`itens-craft`);
+    const quantity = craftInput.getAttribute("data-results");
+    const craftTotal = parseInt(craftNumber) * parseInt(quantity);
+
+    // NPC Value
+    const npcValue = removeMoneyValue(
+      document.getElementById(`npc-value`).innerHTML,
+    );
+    const npcTotal = parseInt(craftTotal) * parseInt(npcValue);
+
+    document.getElementById(`itens-craft`).textContent = craftTotal || "0";
+    document.getElementById(`item-npc`).textContent =
+      moneyValues(npcTotal) || "0";
+
+    if (document.getElementById(`item-price`).value > 0) {
+      updateItemMarketTotal();
+    }
+    // Time value
+    updateTimeTotal(parseInt(craftNumber));
+
+    //Ingredients Update
+    const inputs = document.querySelectorAll(".recipe-market");
+    inputs.forEach((input, index) => {
+      updateRow(index);
+    });
+
+    // Costs value
+    updateCosts();
+  }
+
+  function updateRow(index) {
+    // Craft input
+    const craftNumber = document.getElementById(`craft`).value;
+    if (parseInt(craftNumber) < 1) return;
+    // Market input
+    const marketPrice = removeMoneyValue(
+      document.getElementById(`market-price-${index}`).value,
+    );
+    if (parseInt(marketPrice) < 1) return;
+
+    const npcPrice = removeMoneyValue(
+      document.getElementById(`npc-price-${index}`).textContent,
+    );
+
+    let quantidade = document
+      .getElementById(`quantity-${index}`)
+      .getAttribute("data-item-quantity");
+    if (quantidade < 1) return;
+    quantidade = parseInt(quantidade) * parseInt(craftNumber);
+
+    const marketTotal = parseInt(marketPrice) * parseInt(quantidade);
+    const npcTotal = parseInt(npcPrice) * parseInt(quantidade);
+
+    document.getElementById(`quantity-${index}`).textContent =
+      quantidade || "0";
+    document.getElementById(`npc-total-${index}`).textContent =
+      moneyValues(npcTotal) || "0";
+    document.getElementById(`market-total-${index}`).textContent =
+      moneyValues(marketTotal) || "0";
+
+    updateCosts();
+  }
+
+  function updateItemMarketTotal() {
+    const marketPrice = removeMoneyValue(
+      document.getElementById(`item-price`).value,
+    );
+    if (parseInt(marketPrice) < 1) return;
+    const quantidade = document.getElementById(`itens-craft`).innerHTML;
+    const marketTotal = parseInt(marketPrice) * parseInt(quantidade);
+
+    document.getElementById(`item-total`).textContent =
+      moneyValues(marketTotal) || "0";
+
+    updateCosts();
+  }
+
+  function updateTimeTotal(craft) {
+    const timeText = document.getElementById(`time-total`);
+    let craftTime = timeText.getAttribute("data-time");
+    let time = craftTime * parseInt(craft);
+    const secsPerYear = 31536000;
+    const secsPerMonth = 2592000;
+    const secsPerDay = 86400;
+    const secsPerHour = 3600;
+    const secsPerMinute = 60;
+
+    const years = Math.floor(time / secsPerYear);
+    time %= secsPerYear;
+
+    const months = Math.floor(time / secsPerMonth);
+    time %= secsPerMonth;
+
+    const days = Math.floor(time / secsPerDay);
+    time %= secsPerDay;
+
+    const hours = Math.floor(time / secsPerHour);
+    time %= secsPerHour;
+
+    const minutes = Math.floor(time / secsPerMinute);
+    time %= secsPerMinute;
+
+    const results = [];
+
+    if (years == 1) results.push(`${years} ano`);
+    if (years >= 2) results.push(`${years} anos`);
+    if (months == 1) results.push(`${months} mês`);
+    if (months >= 2) results.push(`${months} meses`);
+    if (days == 1) results.push(`${days} dia`);
+    if (days >= 2) results.push(`${days} dias`);
+    if (hours == 1) results.push(`${hours} hora`);
+    if (hours >= 2) results.push(`${hours} horas`);
+    if (minutes == 1) results.push(`${minutes} minuto`);
+    if (minutes >= 2) results.push(`${minutes} minutos`);
+    if (time == 1) results.push(`${time} segundo`);
+    if (time >= 2) results.push(`${time} segundos`);
+
+    if (results.length > 1) {
+      const lastResult = results.pop();
+      timeText.textContent = results.join(", ") + " e " + lastResult;
+      return;
+    }
+    timeText.textContent = results.join(", ");
+  }
+
+  function updateCosts() {
+    let totalNPC = 0;
+    let totalMarket = 0;
+    const recipeInputs = document.querySelectorAll(".recipe-market");
+    recipeInputs.forEach((input, index) => {
+      totalNPC += removeMoneyValue(
+        document.getElementById(`npc-total-${index}`).textContent,
+      );
+      totalMarket += removeMoneyValue(
+        document.getElementById(`market-total-${index}`).textContent,
+      );
+    });
+    // Total values
+    document.getElementById(`cost-total-npc`).textContent =
+      moneyValues(totalNPC) || "0";
+    document.getElementById(`cost-total-market`).textContent =
+      moneyValues(totalMarket) || "0";
+
+    // By item values
+    const quantidade = document.getElementById(`itens-craft`).innerHTML;
+    document.getElementById(`cost-by-item-npc`).textContent =
+      moneyValues(totalNPC / parseInt(quantidade)) || "0";
+    document.getElementById(`cost-by-item-market`).textContent =
+      moneyValues(totalMarket / parseInt(quantidade)) || "0";
+
+    // By craft values
+    const craftNumber = document.getElementById(`craft`).value;
+    document.getElementById(`cost-by-craft-npc`).textContent =
+      moneyValues(totalNPC / parseInt(craftNumber)) || "0";
+    document.getElementById(`cost-by-craft-market`).textContent =
+      moneyValues(totalMarket / parseInt(craftNumber)) || "0";
+
+    // Profits
+
+    // Total Profit
+    const valueMarket = removeMoneyValue(
+      document.getElementById(`item-total`).textContent,
+    );
+    const valueNpc = removeMoneyValue(
+      document.getElementById(`item-npc`).textContent,
+    );
+
+    document.getElementById(`profit-npc`).textContent =
+      moneyValues(parseInt(valueNpc) - totalMarket) || "0";
+    document.getElementById(`profit-market`).textContent =
+      moneyValues(parseInt(valueMarket) - totalMarket) || "0";
+    // Profit Margin
+    const profitNpc = removeMoneyValue(
+      document.getElementById(`profit-npc`).textContent,
+    );
+    const profitMarket = removeMoneyValue(
+      document.getElementById(`profit-market`).textContent,
+    );
+    document.getElementById(`profit-margin-npc`).textContent =
+      ((parseInt(profitNpc) / totalMarket) * 100).toFixed(2) + " %" || "0";
+    document.getElementById(`profit-margin-market`).textContent =
+      ((parseInt(profitMarket) / totalMarket) * 100).toFixed(2) + " %" || "0";
+
+    // Profit by Hour
+    let craftTime = document
+      .getElementById(`time-total`)
+      .getAttribute("data-time");
+    let time = craftTime * parseInt(craftNumber);
+    const hours = time / 60;
+
+    document.getElementById(`profit-by-hour-npc`).textContent =
+      moneyValues(parseInt(profitNpc) / hours) || "0";
+    document.getElementById(`profit-by-hour-market`).textContent =
+      moneyValues(parseInt(profitMarket) / hours) || "0";
+  }
+
+  function moneyValues(value) {
+    const isNegative = value < 0;
+    value = Math.abs(value);
+
+    let formattedValue;
+    if (value >= 1000000) {
+      formattedValue = (value / 1000000).toFixed(2).replace(/\.00$/, "") + "KK";
+    } else if (value >= 1000) {
+      formattedValue = (value / 1000).toFixed(2).replace(/\.00$/, "") + "K";
+    } else {
+      formattedValue = parseInt(value)
+        .toFixed(2)
+        .replace(/\.00$/, "")
+        .toString();
+    }
+
+    return isNegative ? "-" + formattedValue : formattedValue;
+  }
+
+  function removeMoneyValue(value) {
+    if (value.includes("KK")) {
+      return parseFloat(value.replace("KK", "")) * 1000000;
+    } else if (value.includes("K")) {
+      return parseFloat(value.replace("K", "")) * 1000;
+    } else {
+      return parseInt(value);
+    }
+  }
+</script>

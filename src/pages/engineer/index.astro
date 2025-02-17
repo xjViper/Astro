@@ -1,0 +1,42 @@
+---
+import RecipeCard from "@/components/RecipeCard.astro";
+import Pagination from "@/components/Pagination.astro";
+import config from "@/config/config.json";
+import Base from "@/layouts/Base.astro";
+import { getCollection, getEntry } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import RecipesHeader from "@/partials/RecipesHeader.astro";
+import { getSinglePage } from "@/lib/contentParser.astro";
+import { sortByRank } from "@/lib/utils/sortFunctions";
+import ItemList from "@/helpers/ItemList";
+
+const RECIPE_FOLDER = "engineer";
+
+const craftIndex = (await getEntry(
+  RECIPE_FOLDER,
+  "-index",
+)) as CollectionEntry<"engineer">;
+const crafts = await getSinglePage(RECIPE_FOLDER);
+const sortedCrafts = sortByRank(crafts);
+---
+
+<Base
+  title={craftIndex.data.title}
+  meta_title={craftIndex.data.meta_title}
+  description={craftIndex.data.description}
+>
+  <RecipesHeader title="Engenheiro" />
+
+  <section class="section pl-4 pr-4 md:pl-0 md:pr-0">
+    <div class="container">
+      <div class="row gx-5">
+        <!-- Lista de receitas -->
+        <div class="lg:col-12">
+          <div class="row">
+            <ItemList itens={sortedCrafts} client:load />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

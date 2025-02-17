@@ -176,6 +176,90 @@ const professorCollection = defineCollection({
   }),
 });
 
+const stylistCollection = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/stylist" }),
+  schema: z.object({
+    title: z.string().optional(),
+    meta_title: z.string().optional(),
+    description: z.string().optional(),
+    rank: z.string().optional(),
+    type: z.string().default("estilista"),
+    name: z.string().optional(),
+    recipe_img: z.string().optional(),
+    level: z.number().default(1),
+    craft_time: z.number().default(1),
+    value_npc: z.number().default(1),
+    result: z.number().default(1),
+    ingredients: z
+      .array(
+        z.object({
+          name: z.string(),
+          quantity: z.number().default(1),
+          item_img: z.string().optional(),
+          value_npc: z.number().default(1),
+        }),
+      )
+      .optional(),
+    draft: z.boolean().optional(),
+  }),
+});
+
+const adventurerCollection = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/adventurer" }),
+  schema: z.object({
+    title: z.string().optional(),
+    meta_title: z.string().optional(),
+    description: z.string().optional(),
+    rank: z.string().optional(),
+    type: z.string().default("aventureiro"),
+    name: z.string().optional(),
+    recipe_img: z.string().optional(),
+    level: z.number().default(1),
+    craft_time: z.number().default(1),
+    value_npc: z.number().default(1),
+    result: z.number().default(1),
+    ingredients: z
+      .array(
+        z.object({
+          name: z.string(),
+          quantity: z.number().default(1),
+          item_img: z.string().optional(),
+          value_npc: z.number().default(1),
+        }),
+      )
+      .optional(),
+    draft: z.boolean().optional(),
+  }),
+});
+
+const engineerCollection = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/engineer" }),
+  schema: z.object({
+    title: z.string().optional(),
+    meta_title: z.string().optional(),
+    description: z.string().optional(),
+    rank: z.string().optional(),
+    type: z.string().default("engenheiro"),
+    name: z.string().optional(),
+    recipe_img: z.string().optional(),
+    level: z.number().default(1),
+    craft_time: z.number().default(1),
+    value_npc: z.number().default(1),
+    result: z.number().default(1),
+    ingredients: z
+      .array(
+        z.object({
+          name: z.string(),
+          quantity: z.number().default(1),
+          item_img: z.string().optional(),
+          value_npc: z.number().default(1),
+        }),
+      )
+      .optional(),
+    draft: z.boolean().optional(),
+  }),
+});
+
 // Export collections
 export const collections = {
   // Pages
@@ -186,8 +270,11 @@ export const collections = {
   about: aboutCollection,
   contact: contactCollection,
 
-  // Coleções adicionais
+  // Profisions
   professor: professorCollection,
+  stylist: stylistCollection,
+  adventurer: adventurerCollection,
+  engineer: engineerCollection,
 
   // sections
   ctaSection: ctaSectionCollection,
