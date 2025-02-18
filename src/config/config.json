@@ -1,6 +1,6 @@
 {
   "site": {
-    "title": "Astroplate",
+    "title": "PxG Profit",
     "base_url": "https://astroplate.netlify.app",
     "base_path": "/",
     "trailing_slash": false,
@@ -9,9 +9,8 @@
     "logo_darkmode": "/images/logo-darkmode.png",
     "logo_width": "150",
     "logo_height": "30",
-    "logo_text": "Astroplate"
+    "logo_text": "PxG Profit"
   },
-
   "settings": {
     "search": true,
     "sticky_header": true,
@@ -21,26 +20,22 @@
     "summary_length": 200,
     "blog_folder": "blog"
   },
-
   "params": {
     "contact_form_action": "#",
-    "copyright": "Designed And Developed by [Zeon Studio](https://zeon.studio)"
+    "copyright": "Developed by Jviper - Theme [Astroplate](https://github.com/zeon-studio/astroplate)"
   },
-
   "navigation_button": {
     "enable": true,
-    "label": "Get Started",
-    "link": "https://github.com/zeon-studio/astroplate"
+    "label": "Sobre",
+    "link": "/about"
   },
-
   "disqus": {
     "enable": true,
     "shortname": "themefisher-template",
     "settings": {}
   },
-
   "metadata": {
-    "meta_author": "zeon.studio",
+    "meta_author": "jviper",
     "meta_image": "/images/og-image.png",
     "meta_description": "astro and tailwind boilerplate"
   }
