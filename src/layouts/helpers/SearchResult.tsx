@@ -5,13 +5,20 @@ export interface ISearchItem {
   group: string;
   slug: string;
   frontmatter: {
-    title: string;
-    image?: string;
-    description?: string;
-    categories?: string[];
-    tags?: string[];
+    name: string;
+    recipe_img?: string;
+    rank?: string;
+    level?: number;
+    craft_time?: number;
+    result?: number;
+    value_npc?: number;
+    ingredients: {
+      name: string;
+      quantity?: number;
+      item_img?: string;
+      value_npc?: number;
+    }[];
   };
-  content: string;
 }
 
 export interface ISearchGroup {
@@ -19,13 +26,20 @@ export interface ISearchGroup {
   groupItems: {
     slug: string;
     frontmatter: {
-      title: string;
-      image?: string;
-      description?: string;
-      categories?: string[];
-      tags?: string[];
+      name: string;
+      recipe_img?: string;
+      rank?: string;
+      level?: number;
+      craft_time?: number;
+      result?: number;
+      value_npc?: number;
+      ingredients: {
+        name: string;
+        quantity?: number;
+        item_img?: string;
+        value_npc?: number;
+      }[];
     };
-    content: string;
   }[];
 }
 
@@ -51,7 +65,6 @@ const SearchResult = ({
               {
                 frontmatter: { ...item.frontmatter },
                 slug: item.slug,
-                content: item.content,
               },
             ],
           });
@@ -59,7 +72,6 @@ const SearchResult = ({
           groupItems[groupIndex].groupItems.push({
             frontmatter: { ...item.frontmatter },
             slug: item.slug,
-            content: item.content,
           });
         }
 
@@ -88,7 +100,10 @@ const SearchResult = ({
     const parts = text?.split(new RegExp(`(${substring})`, "gi"));
     return parts?.map((part, index) =>
       part.toLowerCase() === substring.toLowerCase() ? (
-        <span key={index} className="underline">
+        <span
+          key={index}
+          className="underline font-bold text-dark dark:text-darkmode-dark"
+        >
           {part}
         </span>
       ) : (
@@ -143,11 +158,11 @@ const SearchResult = ({
                     id="searchItem"
                     className="search-result-item"
                   >
-                    {item.frontmatter.image && (
+                    {item.frontmatter.recipe_img && (
                       <div className="search-result-item-image">
                         <img
-                          src={item.frontmatter.image}
-                          alt={item.frontmatter.title}
+                          src={item.frontmatter.recipe_img}
+                          alt={item.frontmatter.name}
                         />
                       </div>
                     )}
@@ -156,63 +171,55 @@ const SearchResult = ({
                         href={`/${item.slug}`}
                         className="search-result-item-title search-result-item-link"
                       >
-                        {matchUnderline(item.frontmatter.title, searchString)}
+                        {matchUnderline(item.frontmatter.name, searchString)}
                       </a>
-                      {item.frontmatter.description && (
-                        <p className="search-result-item-description">
-                          {matchUnderline(
-                            item.frontmatter.description,
-                            searchString,
-                          )}
-                        </p>
-                      )}
-                      {item.content && (
-                        <p className="search-result-item-content">
-                          {matchContent(item.content, searchString)}
-                        </p>
-                      )}
+
+                      <div className="flex gap-5">
+                        <span>Level: {item.frontmatter.level}</span>
+                        <span>
+                          Rank: {item.frontmatter.rank?.toUpperCase()}
+                        </span>
+                      </div>
                       <div className="search-result-item-taxonomies">
-                        {item.frontmatter.categories && (
-                          <div className="mr-2">
-                            <svg
-                              width="14"
-                              height="14"
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 512 512"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                        >
+                          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                          <g
+                            id="SVGRepo_tracerCarrier"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          ></g>
+                          <g id="SVGRepo_iconCarrier">
+                            <path
                               fill="currentColor"
-                              viewBox="0 0 16 16"
-                            >
-                              <path d="M11 0H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2 2 2 0 0 0 2-2V4a2 2 0 0 0-2-2 2 2 0 0 0-2-2zm2 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1V3zM2 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V2z"></path>
-                            </svg>
-                            {item.frontmatter.categories.map(
-                              (category, index) => (
-                                <span key={category}>
-                                  {matchUnderline(category, searchString)}
-                                  {item.frontmatter.categories &&
-                                    index !==
-                                      item.frontmatter.categories.length -
-                                        1 && <>, </>}
+                              d="M94.055 21.9L18.998 96.96l42.727 23.6-26.98 26.952L142.35 212.39c-40.443 70.148-30.72 161.07 29.2 220.958 71.605 71.606 187.737 71.587 259.356 0 71.62-71.587 71.642-187.654.037-259.22-59.915-59.878-150.896-69.57-221.084-29.177L144.95 37.415l-8.44 8.432-18.588 18.57L94.055 21.9zm47.224 45.598l62.337 103.275 8.098-5.248c44.21-28.663 99.014-34.044 147.166-16.078-1.16-.026-2.328-.04-3.503-.04-38.988 0-70.594 14.807-70.594 33.073 0 18.27 31.606 33.075 70.594 33.075 31.53 0 58.225-9.684 67.287-23.05 15.942 17.34 27.492 37.224 34.65 58.253-7.76-3.387-18.28-6.706-30.902-9.563-31.383-7.1-75.547-11.615-124.305-11.615-48.757 0-92.92 4.514-124.304 11.615-13.71 3.102-24.997 6.75-32.893 10.438 4.34-12.997 10.343-25.568 18.018-37.383l5.263-8.104-103.33-62.3 13.894-13.88 46.937 25.923 27.914-27.915-26.18-46.635 13.855-13.842zm-1.087 201.287c.482.28.982.56 1.506.84 7.89 4.22 20.41 8.487 36.103 12.037 31.383 7.1 75.547 11.615 124.304 11.615 48.758 0 92.922-4.514 124.305-11.615 15.687-3.55 28.203-7.813 36.094-12.033 1.236 5.837 2.153 11.727 2.746 17.643-9.432 4.277-21.204 7.893-35.074 11.032-33.205 7.513-78.27 12.037-128.07 12.037-49.802 0-94.866-4.524-128.07-12.037-14.67-3.32-27-7.17-36.69-11.776.625-5.952 1.57-11.876 2.845-17.745z"
+                            ></path>
+                          </g>
+                        </svg>
+                        {item.frontmatter.ingredients && (
+                          <div className="ml-3.5 w-full flex flex-wrap items-center gap-x-4 gap-y-1">
+                            {item.frontmatter.ingredients.map((item, index) => (
+                              <div
+                                key={index}
+                                className="flex flex-row items-center"
+                              >
+                                <div className="search-result-ingredients-image">
+                                  <img
+                                    src={item.item_img}
+                                    alt={item.name}
+                                    width={12}
+                                    height={12}
+                                  />
+                                </div>
+                                <span>
+                                  {matchUnderline(item.name, searchString)}
                                 </span>
-                              ),
-                            )}
-                          </div>
-                        )}
-                        {item.frontmatter.tags && (
-                          <div className="mr-2">
-                            <svg
-                              width="14"
-                              height="14"
-                              fill="currentColor"
-                              viewBox="0 0 16 16"
-                            >
-                              <path d="M3 2v4.586l7 7L14.586 9l-7-7H3zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586V2z"></path>
-                              <path d="M5.5 5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1v5.086z"></path>
-                            </svg>
-                            {item.frontmatter.tags.map((tag, index) => (
-                              <span key={tag}>
-                                {matchUnderline(tag, searchString)}
-                                {item.frontmatter.tags &&
-                                  index !==
-                                    item.frontmatter.tags.length - 1 && <>, </>}
-                              </span>
+                              </div>
                             ))}
                           </div>
                         )}

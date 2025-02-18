@@ -4,7 +4,10 @@ const matter = require("gray-matter");
 
 const CONTENT_DEPTH = 2;
 const JSON_FOLDER = "./.json";
-const BLOG_FOLDER = "src/content/blog";
+const PROFESSOR_FOLDER = "src/content/professor";
+const ADVENTURER_FOLDER = "src/content/adventurer";
+const ENGINEER_FOLDER = "src/content/engineer";
+const STYLIST_FOLDER = "src/content/stylist";
 
 // get data from markdown
 const getData = (folder, groupDepth) => {
@@ -20,7 +23,7 @@ const getData = (folder, groupDepth) => {
       return getData(filepath, groupDepth);
     } else if (filename.endsWith(".md") || filename.endsWith(".mdx")) {
       const file = fs.readFileSync(filepath, "utf-8");
-      const { data, content } = matter(file);
+      const { data } = matter(file);
       const pathParts = filepath.split(path.sep);
       const slug =
         data.slug ||
@@ -28,13 +31,12 @@ const getData = (folder, groupDepth) => {
           .slice(CONTENT_DEPTH)
           .join("/")
           .replace(/\.[^/.]+$/, "");
-      const group = pathParts[groupDepth];
+      const group = pathParts[groupDepth - 1];
 
       return {
         group: group,
         slug: slug,
         frontmatter: data,
-        content: content,
       };
     } else {
       return [];
@@ -44,7 +46,25 @@ const getData = (folder, groupDepth) => {
   const publishedPages = getPaths.filter(
     (page) => !page.frontmatter?.draft && page,
   );
-  return publishedPages;
+
+  const sortedPages = publishedPages.sort((a, b) => {
+    if (a.frontmatter.level < b.frontmatter.level) {
+      return -1;
+    }
+    if (a.frontmatter.level > b.frontmatter.level) {
+      return 1;
+    }
+
+    if (a.frontmatter.name < b.frontmatter.name) {
+      return -1;
+    }
+    if (a.frontmatter.name > b.frontmatter.name) {
+      return 1;
+    }
+    return 0;
+  });
+
+  return sortedPages;
 };
 
 try {
@@ -55,13 +75,28 @@ try {
 
   // create json files
   fs.writeFileSync(
-    `${JSON_FOLDER}/posts.json`,
-    JSON.stringify(getData(BLOG_FOLDER, 2)),
+    `${JSON_FOLDER}/professor.json`,
+    JSON.stringify(getData(PROFESSOR_FOLDER, 3)),
+  );
+  fs.writeFileSync(
+    `${JSON_FOLDER}/adventurer.json`,
+    JSON.stringify(getData(ADVENTURER_FOLDER, 3)),
+  );
+  fs.writeFileSync(
+    `${JSON_FOLDER}/engineer.json`,
+    JSON.stringify(getData(ENGINEER_FOLDER, 3)),
+  );
+  fs.writeFileSync(
+    `${JSON_FOLDER}/stylist.json`,
+    JSON.stringify(getData(STYLIST_FOLDER, 3)),
   );
 
   // merger json files for search
-  const posts = require(`../${JSON_FOLDER}/posts.json`);
-  const search = [...posts];
+  const professor = require(`../${JSON_FOLDER}/professor.json`);
+  const adventurer = require(`../${JSON_FOLDER}/adventurer.json`);
+  const engineer = require(`../${JSON_FOLDER}/engineer.json`);
+  const stylist = require(`../${JSON_FOLDER}/stylist.json`);
+  const search = [...professor, ...adventurer, ...engineer, ...stylist];
   fs.writeFileSync(`${JSON_FOLDER}/search.json`, JSON.stringify(search));
 } catch (err) {
   console.error(err);
