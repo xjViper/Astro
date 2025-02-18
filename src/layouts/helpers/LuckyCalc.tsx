@@ -27,11 +27,32 @@ const LuckyCalculator = () => {
     setValores(novosValores);
   };
 
-  // Atualiza o valor base e chama a função de cálculo em tempo real
   const handleValorBaseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const novoValorBase = Number(e.target.value);
-    setValorBase(String(novoValorBase));
-    handleCalcular(Number(novoValorBase) || 0); // Recalcula os valores imediatamente
+    let valorInput = e.target.value;
+    valorInput = valorInput.replace(/[^0-9.,]/g, "");
+    let pontoOuVirgulaCount = (valorInput.match(/[.,]/g) || []).length;
+
+    if (pontoOuVirgulaCount > 1) {
+      const ultimoPontoOuVirgula = valorInput.search(/[.,](?!.*[.,])/);
+
+      if (ultimoPontoOuVirgula !== -1) {
+        valorInput =
+          valorInput.slice(0, ultimoPontoOuVirgula) +
+          valorInput.slice(ultimoPontoOuVirgula + 1);
+      }
+    }
+
+    valorInput = valorInput.replace(/^(\d*[\.,]\d{0,3}).*/, "$1");
+
+    let valorNumerico = parseFloat(valorInput.replace(",", "."));
+
+    if (!isNaN(valorNumerico) && valorNumerico <= 100) {
+      setValorBase(valorInput);
+      handleCalcular(valorNumerico || 0);
+    } else if (valorInput === "") {
+      setValorBase(valorInput);
+      handleCalcular(valorNumerico || 0);
+    }
   };
 
   useEffect(() => {
@@ -41,10 +62,10 @@ const LuckyCalculator = () => {
   return (
     <div className="p-4">
       <div className="mb-4">
-        <h5>Drop Rate</h5>
+        <h6>Drop Rate</h6>
         <div className="flex items-center">
           <input
-            type="number"
+            type="text"
             id="valorBase"
             className="form-input [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             value={valorBase}
@@ -69,6 +90,7 @@ const LuckyCalculator = () => {
                   width={40}
                   alt={`Acréscimo ${porcentagensFixas[index]}%`}
                   className="h-12 w-12"
+                  inputMode="numeric"
                 />
                 <span className="font-medium">{`+${porcentagensFixas[index]}%`}</span>
               </div>
