@@ -49,38 +49,49 @@ const { banner, features } = homepage.data as Homepage;
             class="mb-4 text-h3 lg:text-h1"
           />
           <p set:html={markdownify(banner.content)} class="mb-8" />
-          {
-            banner.button.enable && (
-              <a
-                class="btn btn-primary"
-                href={banner.button.link}
-                target={
-                  banner.button.link.startsWith("http") ? "_blank" : "_self"
-                }
-                rel="noopener"
-              >
-                {banner.button.label}
-              </a>
-            )
-          }
         </div>
-        {
-          banner.image && (
-            <div class="col-12">
-              <ImageMod
-                src={banner.image}
-                height={380}
-                width={1200}
-                alt="banner"
-                format="webp"
-              />
-            </div>
-          )
-        }
       </div>
     </div>
   </section>
   <!-- /Banner -->
+
+  <!-- Features -->
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+    {
+      features.map((feature, index: number) => (
+        <section class={`section-sm  ${index % 2 === 0 && "bg-gradient"}`}>
+          <div class="flex flex-col items-center justify-between">
+            <div
+              class={`mb:md-0 mb-6 md:col-5 ${index % 2 !== 0 && "md:order-2"}`}
+            >
+              <ImageMod
+                src={feature.image}
+                height={480}
+                width={520}
+                alt={feature.title}
+                format="webp"
+              />
+            </div>
+            <div
+              class={`md:col-10 xl:col-6 ${index % 2 !== 0 && "md:order-1"}`}
+            >
+              <h2 set:html={markdownify(feature.title)} class="mb-4" />
+              <p set:html={markdownify(feature.content)} class="mb-4 text-lg" />
+              {feature.button.enable && (
+                <a
+                  class={`btn btn-primary mt-5 ${index % 2 !== 0 && "mb-5"}`}
+                  href={feature.button.link}
+                >
+                  {feature.button.label}
+                </a>
+              )}
+            </div>
+          </div>
+        </section>
+      ))
+    }
+  </div>
+  <!-- /Features -->
 
   <!-- Lucky -->
   <section class="section-sm bg-gradient">

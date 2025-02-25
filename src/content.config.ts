@@ -44,7 +44,6 @@ const homepageCollection = defineCollection({
         title: z.string(),
         image: z.string(),
         content: z.string(),
-        bulletpoints: z.array(z.string()),
         button: z.object({
           enable: z.boolean(),
           label: z.string(),
